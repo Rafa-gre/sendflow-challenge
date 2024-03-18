@@ -24,7 +24,7 @@ export default function ContactList() {
       const contactsData = contactsCollection.docs.map((doc: { id: any; data: () => any; }) => ({
         id: doc.id,
         ...doc.data()
-      }));
+      })).sort((a, b) => a.name.localeCompare(b.name));
       setContacts(contactsData);
       setLoading(false);
     } catch (error) {
