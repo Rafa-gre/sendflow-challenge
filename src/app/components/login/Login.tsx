@@ -8,7 +8,8 @@ import { LockIcon } from "../icons/LockIcon"
 import { GoogleIcon } from "../icons/GoogleIcon"
 import { auth } from "@/app/config/firebase/config"
 import { useRouter } from "next/navigation"
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -16,6 +17,7 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState('');
   const googleAuthProvider = new GoogleAuthProvider();
   const router = useRouter();
+  const {toast} = useToast()
 
   const handleLogin = async () => {
     try {
@@ -35,6 +37,38 @@ export default function Login() {
     }
   };
 
+  const handleForgotPassword = () => {
+
+    if (!email) {
+      toast({
+        title: `Erro`,
+        description: `Por favor, insira seu email`,
+        variant: "destructive",
+        duration: 3000,
+      });
+      return;
+    }
+
+    const auth = getAuth();
+    sendPasswordResetEmail(auth, email)
+      .then(() => { toast({
+        title: "Sucesso",
+        description: `Email de redefinição de senha enviado para ${email}`,
+        variant: "default",
+        duration: 3000,
+      }); })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    toast({
+      title: `Erro: ${errorCode}`,
+      description: `Erro ao enviar email de redefinição de senha: ${errorMessage}`,
+      variant: "destructive",
+      duration: 3000,
+    });
+  });
+  };
+
   return (
     <div className="grid min-h-screen place-items-center gap-6 px-4">
       <div className="w-full max-w-sm">
@@ -52,9 +86,9 @@ export default function Login() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Senha</Label>
-                <Link className="ml-auto text-sm underline" href="#">
+                <button className="ml-auto text-sm underline" onClick={handleForgotPassword}>
                   Esqueceu sua senha?
-                </Link>
+                </button>
               </div>
               <Input id="password" placeholder="Password" required type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
               {errorMessage && <p className="text-red-500">{errorMessage}</p>}
