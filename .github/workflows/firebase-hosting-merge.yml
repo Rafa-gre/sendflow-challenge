@@ -17,5 +17,6 @@ jobs:
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SENDFLOW_CHALLENGE }}'
+          apiKey: '${{ secrets.FIREBASE_API_KEY }}'
           channelId: live
           projectId: sendflow-challenge
