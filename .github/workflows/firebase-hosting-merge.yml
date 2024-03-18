@@ -5,7 +5,7 @@ name: Deploy to Firebase Hosting on merge
 'on':
   push:
     branches:
-      - 'master'
+      - master
 jobs:
   build_and_deploy:
     runs-on: ubuntu-latest
@@ -17,6 +17,5 @@ jobs:
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SENDFLOW_CHALLENGE }}'
-          apiKey: '${{ secrets.FIREBASE_API_KEY }}'
           channelId: live
           projectId: sendflow-challenge
